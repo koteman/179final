@@ -1,1 +1,184 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+        <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+        <meta charset="utf-8">
+        <style>
+            #root
+            {
+                margin:20px;
+            }
+            .chess table.chess
+            {
+                border:5px black solid;
+                padding:0;
+                margin:0;
+                border-spacing: 0;
+            }
+            .chess tr
+            {
+                padding:0;
+                margin:0;
+                border-width:0;
+            }
+            .chess th
+            {
+                width:50px;
+                height:50px;
+                padding:0;
+                margin:0;
+                font-size:1.8em;
+            }
 
+            .chess tr:nth-child(odd) th:nth-child(even)
+            {
+                background-color:black;
+            }
+
+            .chess tr:nth-child(even) th:nth-child(odd)
+            {
+                background-color:black;
+            }
+
+            .chess th:hover
+            {
+                font-size:2em;
+                cursor:help;
+                background-color:#BBB;
+            }
+
+            .chess tr:nth-child(odd) th:nth-child(even):hover
+            {
+                background-color:#333;
+            }
+
+            .chess tr:nth-child(even) th:nth-child(odd):hover
+            {
+                background-color:#333;
+            }
+
+            .chess h1
+            {
+                font-family:sans-serif;
+            }
+            
+            #chess
+            {
+                text-shadow: 1px 0 #fff, -1px 0 #fff, 0 1px #fff, 0 -1px #fff;
+                user-select: none;
+            }
+            
+            #chess .selected
+            {
+                text-shadow: 1px 0 #F00, -1px 0 #F00, 0 1px #F00, 0 -1px #F00;
+                font-size:2.3em;
+            }
+            
+            .restart
+            {
+                font-size:2em;
+                font-family:Arial;
+                margin:20px;
+                padding:10px;
+                border:5px #555 solid;
+                border-radius:20px;
+                width: 150px;
+                text-align: center;
+            }
+            
+            .restart:hover
+            {
+                cursor:pointer;
+                user-select: none;
+            }
+            
+        </style>
+
+        <script>
+            var selected = {
+                x: -1, y: -1
+            };
+            
+            var nul = selected;
+            function click(event)
+            {
+                var pos = {
+                    x: event.target.cellIndex,
+                    y: event.target.parentElement.rowIndex
+                };
+                if((selected.x == -1) && (document.getElementById("board").rows[pos.y].cells[pos.x].innerHTML != ""))
+                {
+                    event.target.setAttribute("class", "selected");
+                    selected = pos;
+                }
+                else
+                {
+                    putChar(pos.x, pos.y, document.getElementById("board").rows[selected.y].cells[selected.x].innerHTML);
+                    putChar(selected.x, selected.y, "");
+                    document.getElementById("board").rows[selected.y].cells[selected.x].removeAttribute("class", "selected");
+                    selected = nul;
+                }
+            }
+            
+            function restart(event)
+            {
+                for(let x = 0; x < 8; x = x + 1)
+                {
+                    for(let y = 0; y < 8; y = y + 1)
+                    {
+                        putChar(x, y, "");
+                        document.getElementById("board").rows[x].cells[y].removeAttribute("class", "selected");
+                    }
+                }
+                putChar(2, 2, "♟︎");
+                putChar(2, 5, "♟︎");
+                putChar(3, 7, "♔");
+                putChar(1, 7, "♘");
+                putChar(4, 4, "♚");
+                selected = nul;
+            }
+            
+            function createDesk()
+            {
+                e = document.getElementById("chess");
+                //alert("Hello World!");
+                console.log("Hello world!");
+                var board = document.createElement('table');
+                let tbody = document.createElement('tbody');
+                for(let y = 0; y < 8; y++)
+                {
+                    let row = document.createElement('tr');
+                    for(let x = 0; x < 8; x++)
+                    {
+                        dd = document.createElement('th');
+                        dd.addEventListener("click", click);
+                        row.appendChild(dd);
+                    }
+                    tbody.appendChild(row);
+                }
+                board.setAttribute("id", "board");
+                board.setAttribute("class", "chess");
+                board.appendChild(tbody);
+                e.appendChild(board);
+                document.getElementById("buttonRestart").addEventListener("click", restart);
+            }
+            
+            function putChar(x, y, char)
+            {
+                t = document.getElementById("board");
+                t.rows[y].cells[x].innerHTML = char;
+            }
+        </script>
+    </head>
+    <body>
+        <div class="chess" id="chess"></div>
+        <div class="restart" id="buttonRestart">ЗАНОВО</div>
+    </body>
+    <script>
+        createDesk();
+        //putChar(2, 1, "♙", 0);
+        restart(null);
+    </script>
+
+</html>
