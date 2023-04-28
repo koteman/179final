@@ -114,6 +114,7 @@
             xhr.onreadystatechange = printResponse;
 
             xhr.send(JSON.stringify(body));
+            console.log("BBB");
 
             // Эта функция автоматически вызовется, когда получим ответ
             function printResponse() {
