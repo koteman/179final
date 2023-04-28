@@ -96,79 +96,32 @@
         </style>
 
         <script>
-            var selected = {
-                x: -1, y: -1
+            // Формируем JSON с SQL-командой
+            const body = {
+              "transaction": [
+              {
+                "query": "SELECT * FROM TEST_TABLE ORDER BY ID ASC"
+              },
+             ]
             };
-            
-            var nul = selected;
-            function click(event)
-            {
-                var pos = {
-                    x: event.target.cellIndex,
-                    y: event.target.parentElement.rowIndex
-                };
-                if((selected.x == -1) && (document.getElementById("board").rows[pos.y].cells[pos.x].innerHTML != ""))
-                {
-                    event.target.setAttribute("class", "selected");
-                    selected = pos;
-                }
-                else
-                {
-                    putChar(pos.x, pos.y, document.getElementById("board").rows[selected.y].cells[selected.x].innerHTML);
-                    putChar(selected.x, selected.y, "");
-                    document.getElementById("board").rows[selected.y].cells[selected.x].removeAttribute("class", "selected");
-                    selected = nul;
-                }
+
+            // Делаем запрос
+            var xhr = new XMLHttpRequest();
+            var url = "https://v1289560.hosted-by-vdsina.ru/testDb";
+            xhr.open("POST", url, true);
+            xhr.setRequestHeader("Content-Type", "application/json");
+            // Указываем функцию, которая будет вызвана, когда будет получен ответ
+            xhr.onreadystatechange = printResponse;
+
+            xhr.send(JSON.stringify(body));
+
+            // Эта функция автоматически вызовется, когда получим ответ
+            function printResponse() {
+              if (xhr.readyState === 4 && xhr.status === 200) {
+              var json = JSON.parse(xhr.responseText);
+                console.log("AAA");
             }
-            
-            function restart(event)
-            {
-                for(let x = 0; x < 8; x = x + 1)
-                {
-                    for(let y = 0; y < 8; y = y + 1)
-                    {
-                        putChar(x, y, "");
-                        document.getElementById("board").rows[x].cells[y].removeAttribute("class", "selected");
-                    }
-                }
-                putChar(2, 2, "♟︎");
-                putChar(2, 5, "♟︎");
-                putChar(3, 7, "♔");
-                putChar(1, 7, "♘");
-                putChar(4, 4, "♚");
-                selected = nul;
-            }
-            
-            function createDesk()
-            {
-                e = document.getElementById("chess");
-                //alert("Hello World!");
-                console.log("Hello world!");
-                var board = document.createElement('table');
-                let tbody = document.createElement('tbody');
-                for(let y = 0; y < 8; y++)
-                {
-                    let row = document.createElement('tr');
-                    for(let x = 0; x < 8; x++)
-                    {
-                        dd = document.createElement('th');
-                        dd.addEventListener("click", click);
-                        row.appendChild(dd);
-                    }
-                    tbody.appendChild(row);
-                }
-                board.setAttribute("id", "board");
-                board.setAttribute("class", "chess");
-                board.appendChild(tbody);
-                e.appendChild(board);
-                document.getElementById("buttonRestart").addEventListener("click", restart);
-            }
-            
-            function putChar(x, y, char)
-            {
-                t = document.getElementById("board");
-                t.rows[y].cells[x].innerHTML = char;
-            }
+        }
         </script>
     </head>
     <body>
